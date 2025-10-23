@@ -6,7 +6,7 @@ export const GAME_BOUNDS: Boundaries = {
   xMin: 0,
   xMax: 36,
   yMin: 0,
-  yMax: 71,
+  yMax: 68,
 };
 export const MOVE_INTERNAL: number = 100;
 export const SCORE_INCREMENT: number = 5;

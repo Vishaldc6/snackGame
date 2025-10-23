@@ -16,7 +16,7 @@ const Snake = ({ snake, direction }: SnackProps) => {
         const segmentStyle = {
           left: val.x * 10,
           top: val.y * 10,
-          zIndex: -ind,
+          zIndex: 0,
         };
         return (
           <View
@@ -60,6 +60,7 @@ const styles = StyleSheet.create({
   head: {
     backgroundColor: "red",
     borderWidth: 1.5,
+    zIndex: 1
   },
   eysContainer: {
     justifyContent: "space-around",

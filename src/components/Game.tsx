@@ -6,6 +6,8 @@ import {
   PanGestureHandlerEventPayload,
 } from "react-native-gesture-handler";
 import { Ionicons } from "@expo/vector-icons";
+import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { BannerAd, BannerAdSize, TestIds } from "react-native-google-mobile-ads";
 
 import {
   Direction,
@@ -23,7 +25,8 @@ import { checkEatsFood } from "../utils/checkEatsFood";
 import { randomFoodPosition } from "../utils/randomFoodPosition";
 
 const Game = () => {
-  const [direction, setDirection] = useState(Direction.RIGHT);
+  const [moveInternal, setMoveInternal] = useState(MOVE_INTERNAL);
+  const [direction, setDirection] = useState(Direction.DOWN);
   const [snake, setSnake] = useState(SNAKE_INIT_POS);
   const [food, setFood] = useState(FOOD_INIT_POS);
 
@@ -35,10 +38,12 @@ const Game = () => {
     if (!isGameOver) {
       const intervalId = setInterval(() => {
         !isPause && moveSnake();
-      }, MOVE_INTERNAL);
+      }, moveInternal);
       return () => clearInterval(intervalId);
     } else {
-      Alert.alert("Game over!", "Your snake is going out of boundries !!");
+      Alert.alert("Game over!", "Your snake is going out of boundries !!", [
+        { onPress: reloadGame }
+      ]);
     }
   }, [snake, isGameOver, isPause]);
 
@@ -104,12 +109,17 @@ const Game = () => {
     setFood(FOOD_INIT_POS);
     setScore(0);
     setDirection(Direction.RIGHT);
+    setMoveInternal(MOVE_INTERNAL);
+  };
+
+  const handleMoveInterval = () => {
+    setMoveInternal(prev => prev / 2)
   };
 
   return (
     <PanGestureHandler onGestureEvent={handleGesture}>
       <View style={styles.container}>
-        <View style={styles.board}>
+        <View style={[styles.board, { marginTop: useSafeAreaInsets().top }]}>
           <Snake snake={snake} direction={direction} />
           <Food x={food.x} y={food.y} />
         </View>
@@ -120,6 +130,7 @@ const Game = () => {
             color={Colors.primary}
             onPress={reloadGame}
           />
+          <Text onPress={handleMoveInterval}>{100 / moveInternal}{"x"}</Text>
           <Ionicons
             name={isPause ? "play-circle" : "pause-circle"}
             size={35}
@@ -132,6 +143,13 @@ const Game = () => {
             {"🍎"}
             {score}
           </Text>
+        </View>
+        <View style={{ alignItems: 'center', }}>
+          <BannerAd
+            unitId={TestIds.BANNER}
+            size={BannerAdSize.BANNER}
+            requestOptions={{ requestNonPersonalizedAdsOnly: true }}
+          />
         </View>
       </View>
     </PanGestureHandler>
