@@ -1,44 +1,42 @@
 import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import { Colors } from "../constants/Colors";
 import { Direction } from "../constants/GameConstants";
 
-interface SnackProps {
+const GRID_STEP = 10;
+const BODY_SIZE = 18;
+const HEAD_SIZE = 24;
+const OFFSET = (BODY_SIZE - HEAD_SIZE) / 2; // -3px offset to center 24px head over 18px body
+
+const SNAKE_COLOR = "#3F8FE8";
+const SNAKE_OUTLINE = "#3B2414";
+
+interface SnakeProps {
   snake: { x: number; y: number }[];
   direction: Direction;
 }
 
-const Snake = ({ snake, direction }: SnackProps) => {
+const Snake = ({ snake, direction }: SnakeProps) => {
   return (
     <>
       {snake.map((val, ind) => {
+        const isHead = ind === 0;
+        const size = isHead ? HEAD_SIZE : BODY_SIZE;
         const segmentStyle = {
-          left: val.x * 10,
-          top: val.y * 10,
-          zIndex: 0,
+          width: size,
+          height: size,
+          borderRadius: size / 2,
+          left: isHead ? val.x * GRID_STEP + OFFSET : val.x * GRID_STEP,
+          top: isHead ? val.y * GRID_STEP + OFFSET : val.y * GRID_STEP,
+          zIndex: snake.length - ind, // head on top, tail underneath
         };
+
         return (
           <View
-            style={[styles.snake, segmentStyle, ind == 0 && styles.head]}
             key={ind}
+            style={[styles.segment, segmentStyle, isHead && styles.head]}
           >
-            {ind === 0 && (
-              <View
-                style={[
-                  styles.eysContainer,
-                  direction == Direction.DOWN || direction == Direction.UP
-                    ? { flexDirection: "row-reverse" }
-                    : { flexDirection: "column" },
-                ]}
-              >
-                {Array(2)
-                  .fill(0)
-                  .map(() => (
-                    <View style={styles.eyes} />
-                  ))}
-              </View>
-            )}
+            {isHead && <Eyes direction={direction} />}
           </View>
         );
       })}
@@ -46,32 +44,65 @@ const Snake = ({ snake, direction }: SnackProps) => {
   );
 };
 
+const Eyes = ({ direction }: { direction: Direction }) => {
+  const vertical = direction === Direction.UP || direction === Direction.DOWN;
+  const front =
+    direction === Direction.UP || direction === Direction.LEFT
+      ? "flex-start"
+      : "flex-end";
+
+  return (
+    <View
+      style={[
+        styles.eyesContainer,
+        { flexDirection: vertical ? "row" : "column", alignItems: front },
+      ]}
+    >
+      <Eye />
+      <Eye />
+    </View>
+  );
+};
+
+const Eye = () => (
+  <View style={styles.eye}>
+    <View style={styles.pupil} />
+  </View>
+);
+
 export default Snake;
 
 const styles = StyleSheet.create({
-  snake: {
-    width: 18,
-    height: 18,
-    borderRadius: 100,
-    backgroundColor: Colors.secondary,
+  segment: {
     position: "absolute",
-    borderWidth: 1,
+    backgroundColor: SNAKE_COLOR,
+    borderWidth: 2,
+    borderColor: SNAKE_OUTLINE,
   },
   head: {
-    backgroundColor: "red",
-    borderWidth: 1.5,
-    zIndex: 1
+    backgroundColor: SNAKE_COLOR,
+    borderWidth: 2,
+    borderColor: SNAKE_OUTLINE,
   },
-  eysContainer: {
-    justifyContent: "space-around",
-    alignItems: "center",
+  eyesContainer: {
     flex: 1,
-    padding: 2,
+    justifyContent: "space-around",
+    padding: 1,
   },
-  eyes: {
-    backgroundColor: "black",
-    height: 2.5,
-    width: 2.5,
-    borderRadius: 5,
+  eye: {
+    width: 8,
+    height: 8,
+    borderRadius: 4,
+    backgroundColor: "#fff",
+    borderWidth: 1.5,
+    borderColor: SNAKE_OUTLINE,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  pupil: {
+    width: 3.5,
+    height: 3.5,
+    borderRadius: 2,
+    backgroundColor: SNAKE_OUTLINE,
   },
 });

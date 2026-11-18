@@ -1,19 +1,31 @@
 import React from "react";
-import { StyleSheet, Text } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 
 import { CoOrdinates } from "../types/types";
 
-const Food = ({ x, y }: CoOrdinates) => {
+const Food = React.memo(({ x, y }: CoOrdinates) => {
   return (
-    <Text style={[styles.food, { top: y * 10, left: x * 10 }]}>{"🍎"}</Text>
+    <View style={[styles.foodContainer, { top: y * 10 - 6, left: x * 10 - 6 }]}>
+      <Text style={styles.foodEmoji}>🍎</Text>
+    </View>
   );
-};
+});
 
 export default Food;
 
 const styles = StyleSheet.create({
-  food: {
-    width: 20,
-    height: 22,
+  foodContainer: {
+    position: "absolute",
+    width: 30,
+    height: 30,
+    justifyContent: "center",
+    alignItems: "center",
+    zIndex: 1,
+  },
+  foodEmoji: {
+    fontSize: 22,
+    lineHeight: 28,
+    includeFontPadding: false,
+    textAlign: "center",
   },
 });
