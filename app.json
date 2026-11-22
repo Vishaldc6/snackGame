@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "snackGame",
-    "slug": "snackGame",
+    "name": "Snake Rush: Retro Arcade",
+    "slug": "snake-rush-retro-arcade",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/logo.png",
@@ -9,14 +9,16 @@
     "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.vishaldc.snackGame"
+      "bundleIdentifier": "com.snakerush.arcade"
     },
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#00393C"
       },
-      "package": "com.vishaldc.snackGame"
+      "package": "com.snakerush.arcade",
+      "versionCode": 1,
+      "permissions": ["android.permission.INTERNET"]
     },
     "web": {
       "bundler": "metro",
