@@ -1,20 +1,20 @@
 // src/utils/storage.ts
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
+const BEST_SCORE_KEY = "@snake_game_best_score";
 let cachedBestScore = 0;
 
 /**
  * Loads the saved best score from persistent storage.
- * Supports localStorage (Hermes/Web) and in-memory cache.
  */
 export const loadBestScore = async (): Promise<number> => {
   try {
-    if (typeof localStorage !== "undefined" && localStorage.getItem) {
-      const stored = localStorage.getItem("@snake_game_best_score");
-      if (stored !== null) {
-        const parsed = parseInt(stored, 10);
-        if (!isNaN(parsed)) {
-          cachedBestScore = parsed;
-          return parsed;
-        }
+    const stored = await AsyncStorage.getItem(BEST_SCORE_KEY);
+    if (stored !== null) {
+      const parsed = parseInt(stored, 10);
+      if (!isNaN(parsed)) {
+        cachedBestScore = parsed;
+        return parsed;
       }
     }
   } catch (error) {
@@ -31,11 +31,8 @@ export const saveBestScore = async (newScore: number): Promise<void> => {
   cachedBestScore = newScore;
 
   try {
-    if (typeof localStorage !== "undefined" && localStorage.setItem) {
-      localStorage.setItem("@snake_game_best_score", newScore.toString());
-    }
+    await AsyncStorage.setItem(BEST_SCORE_KEY, newScore.toString());
   } catch (error) {
     console.warn("Could not save best score to storage:", error);
   }
 };
-

@@ -11,9 +11,17 @@ export default function Index() {
   useEffect(() => {
     if (!isExpoGo) {
       try {
-        const mobileAds = require("react-native-google-mobile-ads").default;
+        const {
+          default: mobileAds,
+          MaxAdContentRating,
+        } = require("react-native-google-mobile-ads");
         mobileAds()
-          .initialize()
+          .setRequestConfiguration({
+            maxAdContentRating: MaxAdContentRating.G,
+            tagForChildDirectedTreatment: true,
+            tagForUnderAgeOfConsent: true,
+          })
+          .then(() => mobileAds().initialize())
           .then((adapterStatuses: any) => {
             console.log({ adapterStatuses });
           })
